@@ -10,9 +10,9 @@ export class UsersService {
     constructor(
         @InjectRepository(User)
         private usersRepository: Repository<User>,
-    ){}
+    ) { }
 
-    createUser(user: CreateUserDto){
+    createUser(user: CreateUserDto) {
         const newUser = this.usersRepository.create(user);
         this.usersRepository.save(newUser);
     }
@@ -22,6 +22,10 @@ export class UsersService {
     }
 
     getUserById(id: number): Promise<User | null> {
-        return this.usersRepository.findOneBy({id});
+        return this.usersRepository.findOneBy({ id });
+    }
+
+    deleteUser(id: number) {
+        this.usersRepository.delete({ id });
     }
 }
