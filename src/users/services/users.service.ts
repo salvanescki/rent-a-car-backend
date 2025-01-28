@@ -17,7 +17,11 @@ export class UsersService {
         this.usersRepository.save(newUser);
     }
 
-    getUsers() {
+    getUsers(): Promise<User[]> {
         return this.usersRepository.find();
+    }
+
+    getUserById(id: number): Promise<User | null> {
+        return this.usersRepository.findOneBy({id});
     }
 }
