@@ -29,7 +29,7 @@ export class User {
     @Column()
     country: string;
 
-    @Column()
+    @Column({default: 'user'})
     role: string; // Type: Rol (enum)
 
     /* 
