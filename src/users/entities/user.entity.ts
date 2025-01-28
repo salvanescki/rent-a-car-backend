@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 /* 
 TODO:
@@ -40,6 +40,6 @@ export class User {
     @Column({type: 'date', default: () => 'CURRENT_DATE'})
     createdAt: Date;
 
-    @Column({type: 'date', default: () => 'CURRENT_DATE'})
+    @UpdateDateColumn({ type: 'timestamp' })
     updatedAt: Date;
 }
