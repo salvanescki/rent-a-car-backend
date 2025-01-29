@@ -23,7 +23,7 @@ export class UsersService {
         return userFound;
     }
 
-    async createUser(user: CreateUserDto) {
+    async createUser(user: CreateUserDto): Promise<User> {
         const userFound = await this.usersRepository.findOneBy({ email : user.email })
 
         if (userFound) {
@@ -31,14 +31,14 @@ export class UsersService {
         }
 
         const newUser = this.usersRepository.create(user);
-        this.usersRepository.save(newUser);
+        return this.usersRepository.save(newUser);
     }
 
     getUsers(): Promise<User[]> {
         return this.usersRepository.find();
     }
 
-    async getUserById(id: number) {
+    async getUserById(id: number): Promise<User> {
         return this._findUserById(id);
     }
 
@@ -54,6 +54,6 @@ export class UsersService {
 
     async updateUser(id: number, user: UpdateUserDto) {
         await this._findUserById(id);
-        this.usersRepository.update({ id }, user);
+        return this.usersRepository.update({ id }, user);
     }
 }
