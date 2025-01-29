@@ -10,7 +10,7 @@ export class UsersController {
     constructor(private usersService: UsersService) { }
 
     @Get()
-    getUsers(): Promise<User[]>{
+    getUsers(): Promise<User[]> {
         return this.usersService.getUsers();
     }
 
@@ -21,17 +21,17 @@ export class UsersController {
 
     @Post()
     createUser(@Body() newUser: CreateUserDto) {
-        this.usersService.createUser(newUser);
+        return this.usersService.createUser(newUser);
     }
 
     @Delete(':id')
     deleteUser(@Param('id', ParseIntPipe) id: number) {
-        this.usersService.deleteUser(id);
+        return this.usersService.deleteUser(id);
     }
 
     @Patch(':id')
-    updateUser(@Param('id', ParseIntPipe) id: number, @Body() user: UpdateUserDto){
-        this.usersService.updateUser(id, user);
+    updateUser(@Param('id', ParseIntPipe) id: number, @Body() user: UpdateUserDto) {
+        return this.usersService.updateUser(id, user);
     }
 
 }
