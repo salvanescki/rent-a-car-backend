@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
@@ -13,7 +13,23 @@ export class UsersService {
         private usersRepository: Repository<User>,
     ) { }
 
-    createUser(user: CreateUserDto) {
+    private async _findUserById(id: number): Promise<User> {
+        const userFound = await this.usersRepository.findOne({ where: { id } });
+        
+        if (!userFound) {
+            throw new NotFoundException('User not found');
+        }
+
+        return userFound;
+    }
+
+    async createUser(user: CreateUserDto) {
+        const userFound = await this.usersRepository.findOneBy({ email : user.email })
+
+        if (userFound) {
+            throw new ConflictException(`A user has already been registered with the email ${user.email}`);
+        }
+
         const newUser = this.usersRepository.create(user);
         this.usersRepository.save(newUser);
     }
@@ -22,15 +38,22 @@ export class UsersService {
         return this.usersRepository.find();
     }
 
-    getUserById(id: number): Promise<User | null> {
-        return this.usersRepository.findOneBy({ id });
+    async getUserById(id: number) {
+        return this._findUserById(id);
     }
 
-    deleteUser(id: number) {
-        this.usersRepository.delete({ id });
+    async deleteUser(id: number) {
+        const result = await this.usersRepository.delete({id});
+
+        if (result.affected === 0) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
+
+        return result;
     }
 
-    updateUser(id: number, user: UpdateUserDto) {
-        this.usersRepository.update({id}, user);
+    async updateUser(id: number, user: UpdateUserDto) {
+        await this._findUserById(id);
+        this.usersRepository.update({ id }, user);
     }
 }
