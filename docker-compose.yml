@@ -20,6 +20,7 @@ services:
     container_name: car-rental-backend
     environment:
       - PORT=${PORT}
+      - DOCKER=true
     ports:
       - '${PORT}:${PORT}'
     depends_on:

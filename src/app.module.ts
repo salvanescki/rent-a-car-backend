@@ -10,17 +10,20 @@ import { UsersModule } from './users/users.module';
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
-        username: configService.get<string>('DB_USERNAME'),
-        password: configService.get<string>('DB_PASSWORD'),
-        database: configService.get<string>('DB_DATABASE'),
-        entities: [__dirname + '/**/entities/*.entity{.ts,.js}'],
-        synchronize: true,
-        autoLoadEntities: true,
-      }),
+      useFactory: (configService: ConfigService) => {
+        const isDocker = process.env.DOCKER === 'true';
+        return {
+          type: 'postgres',
+          host: isDocker ? 'db' : 'localhost',
+          port: configService.get<number>('DB_PORT'),
+          username: configService.get<string>('DB_USERNAME'),
+          password: configService.get<string>('DB_PASSWORD'),
+          database: configService.get<string>('DB_DATABASE'),
+          entities: [__dirname + '/**/entities/*.entity{.ts,.js}'],
+          synchronize: true,
+          autoLoadEntities: true,
+        };
+      },
       inject: [ConfigService],
     }),
     UsersModule,
@@ -29,4 +32,3 @@ import { UsersModule } from './users/users.module';
   providers: [AppService],
 })
 export class AppModule {}
-
