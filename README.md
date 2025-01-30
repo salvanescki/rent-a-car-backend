@@ -1,10 +1,10 @@
 ScaleMote
 
-# Car Rental
+# Rent-a-Car
 
 ## Description
 
-Car Rental is a web application designed to manage the car rental system of the Australian company of the same name. It consists of a car catalog, a rental service, and a payment system.
+Rent-a-Car is a web application designed to manage the car rental system of the Australian company Car Rental. It consists of a car catalog, a rental service, and a payment system.
 
 ## Functionality
 
