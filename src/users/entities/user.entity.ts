@@ -1,11 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-/* 
-TODO:
- - After creating Role, update the type of role column
- - To get documents, for normalization purposes, select * from Documents where userId == id
-*/
-
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
@@ -17,7 +11,7 @@ export class User {
     @Column()
     lastName: string;
 
-    @Column()
+    @Column({ type: 'date' })
     dob: Date;
 
     @Column({unique: true})
@@ -37,9 +31,9 @@ export class User {
     documents: Document
     */
 
-    @Column({type: 'date', default: () => 'CURRENT_DATE'})
+    @Column({type: 'date', default: () => 'CURRENT_TIMESTAMP'})
     createdAt: Date;
 
-    @UpdateDateColumn({ type: 'timestamp' })
+    @UpdateDateColumn({ type: 'date' })
     updatedAt: Date;
 }
