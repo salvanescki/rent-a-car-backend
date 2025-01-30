@@ -14,14 +14,14 @@ import { UsersModule } from './users/users.module';
         const isDocker = process.env.DOCKER === 'true';
         return {
           type: 'postgres',
-          host: isDocker? 'db' : 'localhost',
+          host: isDocker ? 'db' : 'localhost',
           port: configService.get<number>('DB_PORT'),
           username: configService.get<string>('DB_USERNAME'),
           password: configService.get<string>('DB_PASSWORD'),
           database: configService.get<string>('DB_DATABASE'),
           entities: [__dirname + '/**/entities/*.entity{.ts,.js}'],
           synchronize: true,
-          autoLoadEntities: true
+          autoLoadEntities: true,
         };
       },
       inject: [ConfigService],
@@ -32,4 +32,3 @@ import { UsersModule } from './users/users.module';
   providers: [AppService],
 })
 export class AppModule {}
-
