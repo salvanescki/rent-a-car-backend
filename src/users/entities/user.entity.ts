@@ -5,7 +5,7 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
-import { Document } from 'src/documents/entities/document.entity';
+import { Document } from '../../documents/entities/document.entity';
 import { Role } from '../enums/role.enum';
 
 @Entity()

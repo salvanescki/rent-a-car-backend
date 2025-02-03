@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from '../src/users/users.module';
 import { User } from '../src/users/entities/user.entity';
 import { DataSource } from 'typeorm';
+import { DocumentsModule } from '../src/documents/documents.module';
 
 describe('Users', () => {
   let app: INestApplication<App>;
@@ -21,6 +22,7 @@ describe('Users', () => {
           synchronize: true,
         }),
         UsersModule,
+        DocumentsModule,
       ],
     }).compile();
 
