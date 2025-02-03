@@ -6,6 +6,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Document } from 'src/documents/entities/document.entity';
+import { Role } from '../enums/role.enum';
 
 @Entity()
 export class User {
@@ -30,8 +31,8 @@ export class User {
   @Column()
   country: string;
 
-  @Column({ default: 'user' })
-  role: string; // Type: Rol (enum)
+  @Column({ default: Role.client })
+  role: Role;
 
   @OneToMany(() => Document, (document) => document.author)
   documents: Document[];
