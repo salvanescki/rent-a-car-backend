@@ -5,6 +5,7 @@ import { App } from 'supertest/types';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from '../src/users/users.module';
 import { User } from '../src/users/entities/user.entity';
+import { Document } from '../src/documents/entities/document.entity';
 import { DataSource } from 'typeorm';
 import { DocumentsModule } from '../src/documents/documents.module';
 
@@ -18,7 +19,7 @@ describe('Users', () => {
         TypeOrmModule.forRoot({
           type: 'sqlite',
           database: ':memory:',
-          entities: [User],
+          entities: [User, Document],
           synchronize: true,
         }),
         UsersModule,
@@ -83,7 +84,7 @@ describe('Users', () => {
         {
           id: 1,
           ...exampleUserData,
-          role: 'user',
+          role: 1,
           createdAt: today,
           updatedAt: today,
         },
@@ -107,9 +108,10 @@ describe('Users', () => {
       .expect({
         id: 1,
         ...exampleUserData,
-        role: 'user',
+        role: 1,
         createdAt: today,
         updatedAt: today,
+        documents: [],
       });
   });
 
