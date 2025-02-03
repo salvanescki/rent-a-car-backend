@@ -3,7 +3,9 @@ import {
   Column,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { Document } from 'src/documents/entities/document.entity';
 
 @Entity()
 export class User {
@@ -31,10 +33,8 @@ export class User {
   @Column({ default: 'user' })
   role: string; // Type: Rol (enum)
 
-  /* 
-    @Column({nullable: true})
-    documents: Document
-    */
+  @OneToMany(() => Document, (document) => document.author)
+  documents: Document[];
 
   @Column({ type: 'date', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
