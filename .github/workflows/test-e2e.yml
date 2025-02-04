@@ -1,0 +1,56 @@
+name: Run E2E Tests
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  test-e2e:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 23
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Copy .env file
+        run: |
+          echo "DB_USERNAME=test" >> .env
+          echo "DB_PASSWORD=test" >> .env
+          echo "DB_DATABASE=test_db" >> .env
+          echo "DB_PORT=5432" >> .env
+          echo "PORT=3000" >> .env
+
+      - name: Wait for services to be ready
+        run: sleep 10s
+
+      - name: Run E2E tests
+        run: npm run test:e2e
