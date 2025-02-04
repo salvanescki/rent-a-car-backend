@@ -49,14 +49,8 @@ jobs:
           echo "DB_PORT=5432" >> .env
           echo "PORT=3000" >> .env
 
-      - name: Start Docker Compose
-        run: docker compose up -d
-
       - name: Wait for services to be ready
         run: sleep 10s
 
       - name: Run E2E tests
         run: npm run test:e2e
-
-      - name: Stop Docker Compose
-        run: docker compose down
