@@ -41,11 +41,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose-plugin
-
       - name: Copy .env file
         run: |
           echo "DB_USERNAME=test" >> .env
@@ -55,7 +50,7 @@ jobs:
           echo "PORT=3000" >> .env
 
       - name: Start Docker Compose
-        run: docker-compose up -d
+        run: docker compose up -d
 
       - name: Wait for services to be ready
         run: sleep 10s
@@ -64,4 +59,4 @@ jobs:
         run: npm run test:e2e
 
       - name: Stop Docker Compose
-        run: docker-compose down
+        run: docker compose down
