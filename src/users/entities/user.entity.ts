@@ -3,12 +3,15 @@ import {
   Column,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { Document } from '../../documents/entities/document.entity';
+import { Role } from '../enums/role.enum';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   firstName: string;
@@ -28,13 +31,11 @@ export class User {
   @Column()
   country: string;
 
-  @Column({ default: 'user' })
-  role: string; // Type: Rol (enum)
+  @Column({ default: Role.client })
+  role: Role;
 
-  /* 
-    @Column({nullable: true})
-    documents: Document
-    */
+  @OneToMany(() => Document, (document) => document.author)
+  documents: Document[];
 
   @Column({ type: 'date', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
