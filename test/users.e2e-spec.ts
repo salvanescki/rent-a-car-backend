@@ -36,8 +36,6 @@ describe('Users', () => {
     await app.init();
 
     dataSource = moduleFixture.get<DataSource>(DataSource);
-
-    today = getToday();
   });
 
   beforeEach(async () => {
@@ -50,6 +48,8 @@ describe('Users', () => {
       .expect(201);
 
     user = response.body as UserResponseDto;
+
+    today = getToday();
   });
 
   const exampleUserData = {
