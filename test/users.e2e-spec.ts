@@ -15,6 +15,8 @@ import { CreateUserDto } from '../src/users/dto/create-user.dto';
 describe('Users', () => {
   let app: INestApplication<App>;
   let dataSource: DataSource;
+  let user: UserResponseDto;
+  let today: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -34,11 +36,20 @@ describe('Users', () => {
     await app.init();
 
     dataSource = moduleFixture.get<DataSource>(DataSource);
+
+    today = getToday();
   });
 
   beforeEach(async () => {
     await dataSource.dropDatabase();
     await dataSource.synchronize();
+
+    const response = await request(app.getHttpServer())
+      .post('/users')
+      .send(exampleUserData)
+      .expect(201);
+
+    user = response.body as UserResponseDto;
   });
 
   const exampleUserData = {
@@ -57,45 +68,38 @@ describe('Users', () => {
     updatedAt: string;
   }
 
+  const getToday = () => {
+    return new Date(Date.now()).toISOString().slice(0, 19).replace('T', ' ');
+  };
+
   it('should create a user with valid data', () => {
     return request(app.getHttpServer())
       .post('/users')
-      .send(exampleUserData)
+      .send({
+        firstName: 'Emily',
+        lastName: 'Smith',
+        dob: '1990-12-05',
+        email: 'emilysmith@example.com',
+        address: '456 Elm Street',
+        country: 'Canada',
+      })
       .expect(201);
   });
 
-  it('should return error 409 if client tries to create the same user twice', async () => {
-    await request(app.getHttpServer())
-      .post('/users')
-      .send(exampleUserData)
-      .expect(201);
-
+  it('should return error 409 if client tries to create the same user twice', () => {
     return request(app.getHttpServer())
       .post('/users')
       .send(exampleUserData)
       .expect(409);
   });
 
-  it('should list users', async () => {
-    const response = await request(app.getHttpServer())
-      .post('/users')
-      .send(exampleUserData)
-      .expect(201);
-
-    const user = response.body as UserResponseDto;
-    const userId: string = user.id;
-
-    const today = new Date(Date.now())
-      .toISOString()
-      .slice(0, 19)
-      .replace('T', ' ');
-
+  it('should list users', () => {
     return request(app.getHttpServer())
       .get('/users')
       .expect(200)
       .expect([
         {
-          id: userId,
+          id: user.id,
           ...exampleUserData,
           role: Role.client,
           createdAt: today,
@@ -104,25 +108,12 @@ describe('Users', () => {
       ]);
   });
 
-  it('should get user by id', async () => {
-    const response = await request(app.getHttpServer())
-      .post('/users')
-      .send(exampleUserData)
-      .expect(201);
-
-    const user = response.body as UserResponseDto;
-    const userId: string = user.id;
-
-    const today = new Date(Date.now())
-      .toISOString()
-      .slice(0, 19)
-      .replace('T', ' ');
-
+  it('should get user by id', () => {
     return request(app.getHttpServer())
-      .get(`/users/${userId}`)
+      .get(`/users/${user.id}`)
       .expect(200)
       .expect({
-        id: userId,
+        id: user.id,
         ...exampleUserData,
         role: Role.client,
         createdAt: today,
@@ -131,28 +122,15 @@ describe('Users', () => {
       });
   });
 
-  it('should return error 404 when trying to get unregistered user by id', async () => {
-    await request(app.getHttpServer())
-      .post('/users')
-      .send(exampleUserData)
-      .expect(201);
-
+  it('should return error 404 when trying to get unregistered user by id', () => {
     return request(app.getHttpServer())
       .get(`/users/${randomUUID()}`)
       .expect(404);
   });
 
-  it('should delete user by id', async () => {
-    const response = await request(app.getHttpServer())
-      .post('/users')
-      .send(exampleUserData)
-      .expect(201);
-
-    const user = response.body as UserResponseDto;
-    const userId: string = user.id;
-
+  it('should delete user by id', () => {
     return request(app.getHttpServer())
-      .delete(`/users/${userId}`)
+      .delete(`/users/${user.id}`)
       .expect(200)
       .expect({
         raw: [],
@@ -160,28 +138,15 @@ describe('Users', () => {
       });
   });
 
-  it('should return error 404 when trying to delete unregistered user by id', async () => {
-    await request(app.getHttpServer())
-      .post('/users')
-      .send(exampleUserData)
-      .expect(201);
-
+  it('should return error 404 when trying to delete unregistered user by id', () => {
     return request(app.getHttpServer())
       .delete(`/users/${randomUUID()}`)
       .expect(404);
   });
 
-  it('should update user by id', async () => {
-    const response = await request(app.getHttpServer())
-      .post('/users')
-      .send(exampleUserData)
-      .expect(201);
-
-    const user = response.body as UserResponseDto;
-    const userId: string = user.id;
-
+  it('should update user by id', () => {
     return request(app.getHttpServer())
-      .patch(`/users/${userId}`)
+      .patch(`/users/${user.id}`)
       .send({
         country: 'Australia',
       })
@@ -193,12 +158,7 @@ describe('Users', () => {
       });
   });
 
-  it('should return error 404 when trying to update unregistered user by id', async () => {
-    await request(app.getHttpServer())
-      .post('/users')
-      .send(exampleUserData)
-      .expect(201);
-
+  it('should return error 404 when trying to update unregistered user by id', () => {
     return request(app.getHttpServer())
       .patch(`/users/${randomUUID()}`)
       .expect(404);
