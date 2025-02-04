@@ -1,7 +1,5 @@
 import {
   ConflictException,
-  HttpException,
-  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -18,8 +16,11 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  private async _findUserById(id: number): Promise<User> {
-    const userFound = await this.usersRepository.findOne({ where: { id } });
+  private async _findUserById(id: string): Promise<User> {
+    const userFound = await this.usersRepository.findOne({
+      where: { id },
+      relations: ['documents'],
+    });
 
     if (!userFound) {
       throw new NotFoundException('User not found');
@@ -47,21 +48,21 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  async getUserById(id: number): Promise<User> {
+  async getUserById(id: string): Promise<User> {
     return this._findUserById(id);
   }
 
-  async deleteUser(id: number) {
+  async deleteUser(id: string) {
     const result = await this.usersRepository.delete({ id });
 
     if (result.affected === 0) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      throw new NotFoundException('User not found');
     }
 
     return result;
   }
 
-  async updateUser(id: number, user: UpdateUserDto) {
+  async updateUser(id: string, user: UpdateUserDto) {
     await this._findUserById(id);
     return this.usersRepository.update({ id }, user);
   }
