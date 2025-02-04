@@ -1,7 +1,5 @@
 import {
   ConflictException,
-  HttpException,
-  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -58,7 +56,7 @@ export class UsersService {
     const result = await this.usersRepository.delete({ id });
 
     if (result.affected === 0) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      throw new NotFoundException('User not found');
     }
 
     return result;
