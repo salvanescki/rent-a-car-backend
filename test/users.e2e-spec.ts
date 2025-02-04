@@ -8,6 +8,9 @@ import { User } from '../src/users/entities/user.entity';
 import { Document } from '../src/documents/entities/document.entity';
 import { DataSource } from 'typeorm';
 import { DocumentsModule } from '../src/documents/documents.module';
+import { Role } from '../src/users/enums/role.enum';
+import { randomUUID } from 'node:crypto';
+import { CreateUserDto } from '../src/users/dto/create-user.dto';
 
 describe('Users', () => {
   let app: INestApplication<App>;
@@ -47,6 +50,13 @@ describe('Users', () => {
     country: 'United States',
   };
 
+  interface UserResponseDto extends CreateUserDto {
+    id: string;
+    role: number;
+    createdAt: string;
+    updatedAt: string;
+  }
+
   it('should create a user with valid data', () => {
     return request(app.getHttpServer())
       .post('/users')
@@ -67,10 +77,13 @@ describe('Users', () => {
   });
 
   it('should list users', async () => {
-    await request(app.getHttpServer())
+    const response = await request(app.getHttpServer())
       .post('/users')
       .send(exampleUserData)
       .expect(201);
+
+    const user = response.body as UserResponseDto;
+    const userId: string = user.id;
 
     const today = new Date(Date.now())
       .toISOString()
@@ -82,9 +95,9 @@ describe('Users', () => {
       .expect(200)
       .expect([
         {
-          id: 1,
+          id: userId,
           ...exampleUserData,
-          role: 1,
+          role: Role.client,
           createdAt: today,
           updatedAt: today,
         },
@@ -92,10 +105,13 @@ describe('Users', () => {
   });
 
   it('should get user by id', async () => {
-    await request(app.getHttpServer())
+    const response = await request(app.getHttpServer())
       .post('/users')
       .send(exampleUserData)
       .expect(201);
+
+    const user = response.body as UserResponseDto;
+    const userId: string = user.id;
 
     const today = new Date(Date.now())
       .toISOString()
@@ -103,12 +119,12 @@ describe('Users', () => {
       .replace('T', ' ');
 
     return request(app.getHttpServer())
-      .get('/users/1')
+      .get(`/users/${userId}`)
       .expect(200)
       .expect({
-        id: 1,
+        id: userId,
         ...exampleUserData,
-        role: 1,
+        role: Role.client,
         createdAt: today,
         updatedAt: today,
         documents: [],
@@ -121,19 +137,27 @@ describe('Users', () => {
       .send(exampleUserData)
       .expect(201);
 
-    return request(app.getHttpServer()).get('/users/2').expect(404);
+    return request(app.getHttpServer())
+      .get(`/users/${randomUUID()}`)
+      .expect(404);
   });
 
   it('should delete user by id', async () => {
-    await request(app.getHttpServer())
+    const response = await request(app.getHttpServer())
       .post('/users')
       .send(exampleUserData)
       .expect(201);
 
-    return request(app.getHttpServer()).delete('/users/1').expect(200).expect({
-      raw: [],
-      affected: 1,
-    });
+    const user = response.body as UserResponseDto;
+    const userId: string = user.id;
+
+    return request(app.getHttpServer())
+      .delete(`/users/${userId}`)
+      .expect(200)
+      .expect({
+        raw: [],
+        affected: 1,
+      });
   });
 
   it('should return error 404 when trying to delete unregistered user by id', async () => {
@@ -142,17 +166,22 @@ describe('Users', () => {
       .send(exampleUserData)
       .expect(201);
 
-    return request(app.getHttpServer()).delete('/users/2').expect(404);
+    return request(app.getHttpServer())
+      .delete(`/users/${randomUUID()}`)
+      .expect(404);
   });
 
   it('should update user by id', async () => {
-    await request(app.getHttpServer())
+    const response = await request(app.getHttpServer())
       .post('/users')
       .send(exampleUserData)
       .expect(201);
 
+    const user = response.body as UserResponseDto;
+    const userId: string = user.id;
+
     return request(app.getHttpServer())
-      .patch('/users/1')
+      .patch(`/users/${userId}`)
       .send({
         country: 'Australia',
       })
@@ -170,7 +199,9 @@ describe('Users', () => {
       .send(exampleUserData)
       .expect(201);
 
-    return request(app.getHttpServer()).patch('/users/2').expect(404);
+    return request(app.getHttpServer())
+      .patch(`/users/${randomUUID()}`)
+      .expect(404);
   });
 
   afterAll(async () => {

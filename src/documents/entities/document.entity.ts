@@ -9,8 +9,8 @@ import { User } from '../../users/entities/user.entity';
 
 @Entity()
 export class Document {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   url: string;
@@ -27,8 +27,8 @@ export class Document {
   @Column({ type: 'date', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @Column()
-  authorId: number;
+  @Column('uuid')
+  authorId: string;
 
   @ManyToOne(() => User, (user) => user.documents)
   author: User;

@@ -18,7 +18,7 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  private async _findUserById(id: number): Promise<User> {
+  private async _findUserById(id: string): Promise<User> {
     const userFound = await this.usersRepository.findOne({
       where: { id },
       relations: ['documents'],
@@ -50,11 +50,11 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  async getUserById(id: number): Promise<User> {
+  async getUserById(id: string): Promise<User> {
     return this._findUserById(id);
   }
 
-  async deleteUser(id: number) {
+  async deleteUser(id: string) {
     const result = await this.usersRepository.delete({ id });
 
     if (result.affected === 0) {
@@ -64,7 +64,7 @@ export class UsersService {
     return result;
   }
 
-  async updateUser(id: number, user: UpdateUserDto) {
+  async updateUser(id: string, user: UpdateUserDto) {
     await this._findUserById(id);
     return this.usersRepository.update({ id }, user);
   }

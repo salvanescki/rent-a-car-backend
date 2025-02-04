@@ -3,5 +3,5 @@ export interface CreateDocumentDto {
   src: string;
   description: string;
   title: string;
-  authorId: number;
+  authorId: string;
 }
