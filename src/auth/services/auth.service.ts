@@ -1,4 +1,87 @@
 import { Injectable } from '@nestjs/common';
+import {
+  AuthenticationDetails,
+  CognitoUser,
+  CognitoUserAttribute,
+  CognitoUserPool,
+} from 'amazon-cognito-identity-js';
+import { AuthLoginUserDto } from '../dto/auth-login-user.dto';
+import { AuthRegisterUserDto } from '../dto/auth-register-user.dto';
 
 @Injectable()
-export class AuthService {}
+export class AuthService {
+  private userPool: CognitoUserPool;
+
+  constructor() {
+    this.userPool = new CognitoUserPool({
+      UserPoolId: process.env.AWS_COGNITO_USER_POOL_ID as string,
+      ClientId: process.env.AWS_COGNITO_CLIENT_ID as string,
+      endpoint: process.env.AWS_COGNITO_ENDPOINT,
+    });
+  }
+
+  async registerUser(authRegisterUserDto: AuthRegisterUserDto) {
+    const { name, email, password } = authRegisterUserDto;
+
+    return new Promise((resolve, reject) => {
+      this.userPool.signUp(
+        email,
+        password,
+        [
+          new CognitoUserAttribute({
+            Name: 'name',
+            Value: name,
+          }),
+        ],
+        [],
+        (err, result) => {
+          if (err) {
+            reject(
+              new Error(
+                err.message || 'An error occurred while registering the user.',
+              ),
+            );
+          } else if (result && result.user) {
+            resolve(result.user);
+          } else {
+            reject(new Error('Sign-up failed, user is undefined.'));
+          }
+        },
+      );
+    });
+  }
+
+  async authenticateUser(authLoginUserDto: AuthLoginUserDto) {
+    const { email, password } = authLoginUserDto;
+
+    const userData = {
+      Username: email,
+      Pool: this.userPool,
+    };
+
+    const authenticationDetails = new AuthenticationDetails({
+      Username: email,
+      Password: password,
+    });
+
+    const userCognito = new CognitoUser(userData);
+
+    return new Promise((resolve, reject) => {
+      userCognito.authenticateUser(authenticationDetails, {
+        onSuccess: (result) => {
+          resolve({
+            accessToken: result.getAccessToken().getJwtToken(),
+            refreshToken: result.getRefreshToken().getToken(),
+          });
+        },
+        onFailure: (err: Error) => {
+          reject(
+            new Error(
+              err.message || 'An error occurred while authenticating the user.',
+            ),
+          );
+        },
+      });
+    });
+  }
+}
