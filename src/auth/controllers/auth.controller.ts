@@ -8,6 +8,7 @@ import {
 import { AuthService } from '../services/auth.service';
 import { AuthLoginUserDto } from '../dto/auth-login-user.dto';
 import { AuthRegisterUserDto } from '../dto/auth-register-user.dto';
+import { AuthChangePasswordUserDto } from '../dto/auth-change-password-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -22,5 +23,13 @@ export class AuthController {
   @UsePipes(ValidationPipe)
   async login(@Body() authLoginUserDto: AuthLoginUserDto) {
     return this.authService.authenticateUser(authLoginUserDto);
+  }
+
+  @Post('/change-password')
+  @UsePipes(ValidationPipe)
+  async changePassword(
+    @Body() authChangePasswordUserDto: AuthChangePasswordUserDto,
+  ) {
+    return this.authService.changeUserPassword(authChangePasswordUserDto);
   }
 }

@@ -7,6 +7,7 @@ import {
 } from 'amazon-cognito-identity-js';
 import { AuthLoginUserDto } from '../dto/auth-login-user.dto';
 import { AuthRegisterUserDto } from '../dto/auth-register-user.dto';
+import { AuthChangePasswordUserDto } from '../dto/auth-change-password-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -73,6 +74,54 @@ export class AuthService {
             accessToken: result.getAccessToken().getJwtToken(),
             refreshToken: result.getRefreshToken().getToken(),
           });
+        },
+        onFailure: (err: Error) => {
+          reject(
+            new Error(
+              err.message || 'An error occurred while authenticating the user.',
+            ),
+          );
+        },
+      });
+    });
+  }
+
+  async changeUserPassword(
+    authChangePasswordUserDto: AuthChangePasswordUserDto,
+  ) {
+    const { email, currentPassword, newPassword } = authChangePasswordUserDto;
+
+    const userData = {
+      Username: email,
+      Pool: this.userPool,
+    };
+
+    const authenticationDetails = new AuthenticationDetails({
+      Username: email,
+      Password: currentPassword,
+    });
+
+    const userCognito = new CognitoUser(userData);
+
+    return new Promise((resolve, reject) => {
+      userCognito.authenticateUser(authenticationDetails, {
+        onSuccess: () => {
+          userCognito.changePassword(
+            currentPassword,
+            newPassword,
+            (err, result) => {
+              if (err) {
+                reject(
+                  new Error(
+                    err.message ||
+                      'An error occurred while changing the user password.',
+                  ),
+                );
+              } else {
+                resolve(result);
+              }
+            },
+          );
         },
         onFailure: (err: Error) => {
           reject(
