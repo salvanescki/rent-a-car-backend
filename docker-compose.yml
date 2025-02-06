@@ -38,12 +38,19 @@ services:
   cognito-local:
     image: jagregory/cognito-local
     container_name: cognito-local
+    restart: always
     ports:
       - "9229:9229"
     environment:
       - NODE_TLS_REJECT_UNAUTHORIZED=0
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_REGION=${AWS_REGION}
+    volumes:
+      - cognito-data:/app/.cognito
     mem_limit: 256m
     cpus: "0.5"
 
 volumes:
   pgdata:
+  cognito-data:
