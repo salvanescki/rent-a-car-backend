@@ -8,6 +8,8 @@ import {
 import { AuthLoginUserDto } from '../dto/auth-login-user.dto';
 import { AuthRegisterUserDto } from '../dto/auth-register-user.dto';
 import { AuthChangePasswordUserDto } from '../dto/auth-change-password-user.dto';
+import { AuthForgotPasswordUserDto } from '../dto/auth-forgot-password-user.dto';
+import { AuthConfirmPasswordUserDto } from '../dto/auth-confirm-password-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -124,11 +126,55 @@ export class AuthService {
           );
         },
         onFailure: (err: Error) => {
-          reject(
-            new Error(
-              err.message || 'An error occurred while authenticating the user.',
-            ),
-          );
+          reject(err);
+        },
+      });
+    });
+  }
+
+  async forgotUserPassword(
+    authForgotPasswordUserDto: AuthForgotPasswordUserDto,
+  ) {
+    const { email } = authForgotPasswordUserDto;
+
+    const userData = {
+      Username: email,
+      Pool: this.userPool,
+    };
+
+    const userCognito = new CognitoUser(userData);
+
+    return new Promise((resolve, reject) => {
+      userCognito.forgotPassword({
+        onSuccess: (result) => {
+          resolve(result);
+        },
+        onFailure: (err: Error) => {
+          reject(err);
+        },
+      });
+    });
+  }
+
+  async confirmUserPassword(
+    authConfirmPasswordUserDto: AuthConfirmPasswordUserDto,
+  ) {
+    const { email, confirmationCode, newPassword } = authConfirmPasswordUserDto;
+
+    const userData = {
+      Username: email,
+      Pool: this.userPool,
+    };
+
+    const userCognito = new CognitoUser(userData);
+
+    return new Promise((resolve, reject) => {
+      userCognito.confirmPassword(confirmationCode, newPassword, {
+        onSuccess: () => {
+          resolve({ status: 'success' });
+        },
+        onFailure: (err: Error) => {
+          reject(err);
         },
       });
     });
