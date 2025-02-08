@@ -10,6 +10,10 @@ import { AuthRegisterUserDto } from '../dto/auth-register-user.dto';
 import { AuthChangePasswordUserDto } from '../dto/auth-change-password-user.dto';
 import { AuthForgotPasswordUserDto } from '../dto/auth-forgot-password-user.dto';
 import { AuthConfirmPasswordUserDto } from '../dto/auth-confirm-password-user.dto';
+import {
+  CognitoIdentityProviderClient,
+  InitiateAuthCommand,
+} from '@aws-sdk/client-cognito-identity-provider';
 
 @Injectable()
 export class AuthService {
@@ -57,35 +61,31 @@ export class AuthService {
   async authenticateUser(authLoginUserDto: AuthLoginUserDto) {
     const { email, password } = authLoginUserDto;
 
-    const userData = {
-      Username: email,
-      Pool: this.userPool,
-    };
-
-    const authenticationDetails = new AuthenticationDetails({
-      Username: email,
-      Password: password,
+    const cognitoClient = new CognitoIdentityProviderClient({
+      region: process.env.AWS_REGION,
+      endpoint: process.env.AWS_COGNITO_ENDPOINT,
     });
 
-    const userCognito = new CognitoUser(userData);
-
-    return new Promise((resolve, reject) => {
-      userCognito.authenticateUser(authenticationDetails, {
-        onSuccess: (result) => {
-          resolve({
-            accessToken: result.getAccessToken().getJwtToken(),
-            refreshToken: result.getRefreshToken().getToken(),
-          });
-        },
-        onFailure: (err: Error) => {
-          reject(
-            new Error(
-              err.message || 'An error occurred while authenticating the user.',
-            ),
-          );
-        },
-      });
+    const command = new InitiateAuthCommand({
+      AuthFlow: 'USER_PASSWORD_AUTH',
+      ClientId: process.env.AWS_COGNITO_CLIENT_ID!,
+      AuthParameters: {
+        USERNAME: email,
+        PASSWORD: password,
+      },
     });
+
+    try {
+      const response = await cognitoClient.send(command);
+      return {
+        accessToken: response.AuthenticationResult?.AccessToken,
+        refreshToken: response.AuthenticationResult?.RefreshToken,
+      };
+    } catch (err) {
+      throw new Error(
+        err instanceof Error ? err.message : 'An unknown error occurred',
+      );
+    }
   }
 
   async changeUserPassword(

@@ -47,10 +47,9 @@ services:
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - AWS_REGION=${AWS_REGION}
     volumes:
-      - cognito-data:/app/.cognito
+      - ./cognito-data:/app/.cognito
     mem_limit: 256m
     cpus: "0.5"
 
 volumes:
   pgdata:
-  cognito-data:
