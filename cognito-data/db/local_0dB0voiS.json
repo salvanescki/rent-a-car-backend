@@ -39,6 +39,28 @@
       "Username": "johndoe@gmail.com",
       "UserStatus": "UNCONFIRMED",
       "ConfirmationCode": "954832"
+    },
+    "janedoe@gmail.com": {
+      "Attributes": [
+        {
+          "Name": "sub",
+          "Value": "8f95c8ef-fd58-4718-bc20-8d84cd76d395"
+        },
+        {
+          "Name": "name",
+          "Value": "Jane Doe"
+        }
+      ],
+      "Enabled": true,
+      "Password": "Adfd213@437",
+      "RefreshTokens": [
+        "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2duaXRvOnVzZXJuYW1lIjoiamFuZWRvZUBnbWFpbC5jb20iLCJpYXQiOjE3MzkyMjAyNjQsImp0aSI6ImU3N2FjNmRiLWYxZWYtNDg1ZS1iNjQ3LTdhODYzNmU2NGEwZCIsImV4cCI6MTczOTgyNTA2NCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo5MjI5L2xvY2FsXzBkQjB2b2lTIn0.o2JTAFBXYeOd_DINukfKlcuDtu1D_5UuILUTaMjeHHrly-EGFZbvwMCUs-Q8sktKE6VDjX6ubCY8EYx_ilpjTve3jnjwH9bKlLkFkd87_GhoGFoJYXuBGqSQWVkbOqBYL1sSwTxEnP0eifo5xw40Nch4oGV-eaLEHH3Kyn0h3lprcYH2dId-IWN_3qTpc6FPiFHA1453qekabvHMgsZ6JBwqgveQvhWsj2MghPkCMTZD7TT4RmkZJKirGx644jQvknc4wpjarmsOjst4TSSGLa4xNG33n35_XmfApFrNBbGwx-LWuPRjI_QIlUR7kw1PEmszvyu4HWTJ0W07uDfXzg"
+      ],
+      "UserCreateDate": "2025-02-10T20:44:03.893Z",
+      "UserLastModifiedDate": "2025-02-10T20:44:24.194Z",
+      "Username": "janedoe@gmail.com",
+      "UserStatus": "CONFIRMED",
+      "ConfirmationCode": "164766"
     }
   },
   "Options": {

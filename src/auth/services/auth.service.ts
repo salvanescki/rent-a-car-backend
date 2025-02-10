@@ -11,6 +11,7 @@ import { AuthChangePasswordUserDto } from '../dto/auth-change-password-user.dto'
 import { AuthForgotPasswordUserDto } from '../dto/auth-forgot-password-user.dto';
 import { AuthConfirmPasswordUserDto } from '../dto/auth-confirm-password-user.dto';
 import {
+  AdminConfirmSignUpCommand,
   CognitoIdentityProviderClient,
   InitiateAuthCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
@@ -66,17 +67,25 @@ export class AuthService {
       endpoint: process.env.AWS_COGNITO_ENDPOINT,
     });
 
-    const command = new InitiateAuthCommand({
-      AuthFlow: 'USER_PASSWORD_AUTH',
-      ClientId: process.env.AWS_COGNITO_CLIENT_ID!,
-      AuthParameters: {
-        USERNAME: email,
-        PASSWORD: password,
-      },
-    });
-
     try {
-      const response = await cognitoClient.send(command);
+      const confirmCommand = new AdminConfirmSignUpCommand({
+        UserPoolId: process.env.AWS_COGNITO_USER_POOL_ID!,
+        Username: email,
+      });
+
+      await cognitoClient.send(confirmCommand);
+
+      const authCommand = new InitiateAuthCommand({
+        AuthFlow: 'USER_PASSWORD_AUTH',
+        ClientId: process.env.AWS_COGNITO_CLIENT_ID!,
+        AuthParameters: {
+          USERNAME: email,
+          PASSWORD: password,
+        },
+      });
+
+      const response = await cognitoClient.send(authCommand);
+
       return {
         accessToken: response.AuthenticationResult?.AccessToken,
         refreshToken: response.AuthenticationResult?.RefreshToken,
