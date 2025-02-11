@@ -21,7 +21,7 @@ import { AuthConfirmPasswordUserDto } from '../dto/auth-confirm-password-user.dt
 import { Role } from '../../users/enums/role.enum';
 
 @Injectable()
-export class AuthService implements IAuthService {
+export class CognitoService implements IAuthService {
   private userPool: CognitoUserPool;
   private readonly cognitoClient: CognitoIdentityProviderClient;
 

@@ -10,11 +10,11 @@ import { AuthRegisterUserDto } from '../dto/auth-register-user.dto';
 import { AuthChangePasswordUserDto } from '../dto/auth-change-password-user.dto';
 import { AuthForgotPasswordUserDto } from '../dto/auth-forgot-password-user.dto';
 import { AuthConfirmPasswordUserDto } from '../dto/auth-confirm-password-user.dto';
-import { AuthService } from '../services/auth.service';
+import { CognitoService } from '../services/cognito.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: CognitoService) {}
 
   @Post('/register')
   async register(@Body() authRegisterUserDto: AuthRegisterUserDto) {
