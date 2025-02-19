@@ -1,0 +1,20 @@
+{
+  "Clients": {
+    "6e4644fb4lqykqmxio7lme4rs": {
+      "ClientId": "6e4644fb4lqykqmxio7lme4rs",
+      "ClientName": "MyAppClient",
+      "CreationDate": "2025-02-08T11:13:07.196Z",
+      "ExplicitAuthFlows": [
+        "ALLOW_USER_PASSWORD_AUTH",
+        "ALLOW_REFRESH_TOKEN_AUTH"
+      ],
+      "LastModifiedDate": "2025-02-08T11:13:07.196Z",
+      "TokenValidityUnits": {
+        "AccessToken": "hours",
+        "IdToken": "minutes",
+        "RefreshToken": "days"
+      },
+      "UserPoolId": "local_0dB0voiS"
+    }
+  }
+}

@@ -11,25 +11,25 @@ Rent-a-Car is a web application designed to manage the car rental system of the 
 The application is designed to comply with this requirements:
 
 - Authentication & Authorization
-	- Sign Up
-	- Forgot password
-	- Login
-	- Logout
-	- Forbid unauthorized access to screens
-	- User and Admin roles 
+  - Sign Up
+  - Forgot password
+  - Login
+  - Logout
+  - Forbid unauthorized access to screens
+  - User and Admin roles
 - Catalogue
-	- Users can see the list of available cars
-	- Users can select a car to see their details and pictures 
+  - Users can see the list of available cars
+  - Users can select a car to see their details and pictures
 - Rental
-	- Users can complete a form to request a rental
+  - Users can complete a form to request a rental
 - User
-	- Users can complete their details
-	- Users can upload documents
+  - Users can complete their details
+  - Users can upload documents
 - Admin
-	- Admin can upload cars to the catalogue
-	- Admin can review, approve and deny rental requests
+  - Admin can upload cars to the catalogue
+  - Admin can review, approve and deny rental requests
 - Stellar
-	- Users can perform payments using the Stellar Network
+  - Users can perform payments using the Stellar Network
 
 ## Stack
 
@@ -39,7 +39,6 @@ The application is designed to comply with this requirements:
   - AWS S3 for image storage
   - AWS Cognito to manage user log-in
 - Template from Tailwind UI
-
 
 ## Prerequisites
 
