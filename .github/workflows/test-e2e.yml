@@ -42,11 +42,12 @@ jobs:
           AWS_COGNITO_CLIENT_ID: "6e4644fb4lqykqmxio7lme4rs"
           AWS_COGNITO_AUTHORITY: http://localhost:9229/
           AWS_COGNITO_ENDPOINT: http://localhost:9229/
-        options:
-          --health-cmd "curl --silent --fail http://localhost:9229/health | grep -q '{\"ok\":true}' || exit 1"
-          --health-interval 20s
-          --health-timeout 5s
-          --health-retries 5
+        healthcheck:
+          test: ["CMD", "curl", "--silent", "--fail", "http://localhost:9229/health"]
+          interval: 20s
+          retries: 5
+          timeout: 10s
+          start_period: 30s
 
     steps:
       - name: Checkout repository
