@@ -34,7 +34,6 @@ jobs:
         ports:
           - 9229:9229
         env:
-          - NODE_TLS_REJECT_UNAUTHORIZED=0
           - AWS_ACCESS_KEY_ID=test
           - AWS_SECRET_ACCESS_KEY=test
           - AWS_REGION=us-east-1
