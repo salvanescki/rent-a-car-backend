@@ -44,9 +44,9 @@ jobs:
           AWS_COGNITO_ENDPOINT: http://cognito-local:9229/
         options:
           --health-cmd "curl --silent --fail http://cognito-local:9229/status || exit 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-interval 15s
+          --health-timeout 15s
+          --health-retries 10
 
     steps:
       - name: Checkout repository
@@ -77,6 +77,12 @@ jobs:
 
       - name: Wait for services to be ready
         run: sleep 10s
+
+      - name: Check logs for cognito-local
+        run: docker logs cognito-local
+
+      - name: Check if cognito-local is accessible
+        run: curl --silent --fail http://cognito-local:9229/status
 
       - name: Run E2E tests
         run: npm run test:e2e
