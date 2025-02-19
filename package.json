@@ -1,8 +1,8 @@
 {
-  "name": "car-rental-backend",
+  "name": "rent-a-car-backend",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "A simple app to rent a car",
+  "author": "Nicolás Salvanescki",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -18,14 +18,34 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "prepare": "husky"
+    "prepare": "husky",
+    "lint-staged": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.744.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.0",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/jwt": "^11.0.0",
+    "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/typeorm": "^11.0.0",
+    "amazon-cognito-identity-js": "^6.3.12",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "cognito-local": "^3.23.3",
+    "jwks-rsa": "^3.1.0",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
     "pg": "^8.13.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
@@ -42,6 +62,7 @@
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.10.7",
+    "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^6.0.2",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",

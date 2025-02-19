@@ -5,4 +5,5 @@ export interface CreateUserDto {
   email: string;
   address: string;
   country: string;
+  role?: number;
 }

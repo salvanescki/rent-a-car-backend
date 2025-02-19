@@ -1,23 +1,28 @@
-version: '3.8'
 services:
   db:
     image: postgres:17-alpine
     restart: always
+    env_file:
+      - .env
     environment:
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_DATABASE}
     container_name: postgres
     volumes:
-      - ./pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
     ports:
       - '${DB_PORT}:${DB_PORT}'
+    mem_limit: 256m
+    cpus: "0.5"
 
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: car-rental-backend
+    container_name: rent-a-car-backend
+    env_file:
+      - .env
     environment:
       - PORT=${PORT}
       - DOCKER=true
@@ -27,3 +32,24 @@ services:
       - db
     volumes:
       - ./src:/app/src
+    mem_limit: 512m
+    cpus: "1.0"
+
+  cognito-local:
+    image: jagregory/cognito-local
+    container_name: cognito-local
+    restart: always
+    ports:
+      - "9229:9229"
+    environment:
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_REGION=${AWS_REGION}
+    volumes:
+      - ./cognito-data:/app/.cognito
+    mem_limit: 256m
+    cpus: "0.5"
+
+volumes:
+  pgdata:
